@@ -1,47 +1,55 @@
-missing = []
-import os
-try:    
-    from PyPDF2 import PdfFileMerger
-except:
-    missing.append("PyPDF2")
-try:
-    import PySimpleGUI as sg
-except:
-    missing.append("PySimpleGUI")
 
-if(len(missing)>0): print("Missing module(s): ")
-for mod in missing:
-    print(mod)
+from __future__ import print_function
+from reportlab.pdfgen import canvas
+import os  
+from PyPDF2 import PdfFileMerger
+import PySimpleGUI as sg
 
-del missing 
 
 ############################################## Warning: No error handling
 ############################################## actual functionality #######################################
 
-def create_pdf():
-    pass
+def create_pdf(vals):
+    TEXT = """
+    a wonderful file
+    created with Sample_Code/makesimple.py"""
+    output_filename = "TEST.pdf"
+    point = 1
+    inch = 72
+    title = output_filename
+    c = canvas.Canvas(output_filename, pagesize=(8.5 * inch, 11 * inch))
+    c.setStrokeColorRGB(0,0,0)
+    c.setFillColorRGB(0,0,0)
+    c.setFont("Helvetica", 12 * point)
+    v = 10 * inch
+    for subtline in TEXT.split( '\n' ):
+        c.drawString( 1 * inch, v, subtline )
+        v -= 12 * point
+    c.showPage()
+    c.save()
+    print("Created Deckblatt")
+
 
 def merge(file1,file2,out):
-    base_p = os.path.split(file1)[0]
-
     merger = PdfFileMerger()
 
-    #file1 = file1.replace("\\","\\\\")
-    #file2 = file2.replace("\\","\\\\")
     merger.append(file1)
     merger.append(file2)
 
     # Write to an output PDF document
-    output = open(base_p+"/"+out+".pdf", "wb")
+    output = open(out, "wb")
     merger.write(output)
 
 def processPDFs(vals):
+    output_f = os.path.split(vals["file_1_k"])[0]
+    output_f += "/"+vals["out_k"]+".pdf"
+
     if(vals["file_2_k"]!=""):
-        merge(vals["file_1_k"],vals["file_2_k"],vals["out_k"])
+        merge(vals["file_1_k"],vals["file_2_k"],output_f)
 
     if(vals["Deckb_k"]):
-        print("deckblatt wird generiert!")
-        #TODO: create and merge with end
+        #merge(output_f,_DECKBLATT_,output_f) #output_f kann evtl vorher noch nicht generiert worden sein
+        create_pdf(vals)
     
 
 ############################################### UI ######################################################
