@@ -9,11 +9,14 @@ import PySimpleGUI as sg
 ############################################## Warning: No error handling
 ############################################## actual functionality #######################################
 
+#from: https://github.com/mstamy2/PyPDF2/blob/master/Sample_Code/makesimple.py
 def create_pdf(vals):
-    TEXT = """
-    a wonderful file
-    created with Sample_Code/makesimple.py"""
-    output_filename = "TEST.pdf"
+    TEXT = ""
+    for key in ["Kurs","Gruppe","Blatt","Aufgabe"]:
+        if(vals[key]!=""):
+            TEXT += key+": "+vals[key]+"\n"
+    TEXT += "Mitglieder :\n"+vals["Mitglieder"]
+    output_filename = "temp_deckblatt.pdf" #Created at file location
     point = 1
     inch = 72
     title = output_filename
@@ -48,22 +51,28 @@ def processPDFs(vals):
         merge(vals["file_1_k"],vals["file_2_k"],output_f)
 
     if(vals["Deckb_k"]):
-        #merge(output_f,_DECKBLATT_,output_f) #output_f kann evtl vorher noch nicht generiert worden sein
         create_pdf(vals)
-    
+        if(vals["file_2_k"]!=""):
+            merge("temp_deckblatt.pdf",output_f,output_f)
+        else:
+            merge("temp_deckblatt.pdf",vals["file_1_k"],output_f)
+
+     
 
 ############################################### UI ######################################################
 
 layout = [
     [sg.Text("Deckblatt erstellen")],
     [sg.Text("Kurs")],
-    [sg.Input(key="kurs_k")],
+    [sg.Input(key="Kurs")],#suboptimal macht aber file schreiben easier
     [sg.Text("Gruppe")],
-    [sg.Input(key="gruppe_k")],
+    [sg.Input(key="Gruppe")],
     [sg.Text("Blatt")],
-    [sg.Input(key="blatt_k")],
+    [sg.Input(key="Blatt")],
+    [sg.Text("Aufgabe")],
+    [sg.Input(key="Aufgabe")],
     [sg.Text("Mitglieder")],
-    [sg.Input(key="mitgl_k")],
+    [sg.Multiline(key="Mitglieder")],
     [sg.Text('PDF File')], 
     [sg.Input(key="file_1_k"), sg.FileBrowse()],
     [sg.Text('Optional File 2')], 
