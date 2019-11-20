@@ -1,6 +1,21 @@
+missing = []
 from sys import argv
-from PyPDF2 import PdfFileMerger
-import PySimpleGUI as sg 
+try:    
+    from PyPDF2 import PdfFileMerger
+except:
+    missing.append("PyPDF2")
+try:
+    import PySimpleGUI as sg
+except:
+    missing.append("PySimpleGUI")
+
+if(len(missing)>0): print("Missing module(s): ")
+for mod in missing:
+    print(mod)
+
+del missing 
+
+###############################################
 
 layout = [
     [sg.Text("Deckblatt erstellen")],
@@ -11,8 +26,7 @@ layout = [
     [sg.FilesBrowse("Dateien")]
 ]
 
-sel_file = sg.Window('Select File').Layout(
-    [[sg.Text('PDF File')], [sg.Input(), sg.FileBrowse()], [sg.OK(), sg.Cancel()]])
+sel_file = [[sg.Text('PDF File')], [sg.Input(), sg.FileBrowse()]]
 
 window = sg.Window("PDFMerger",layout)
 
