@@ -10,7 +10,7 @@ import PySimpleGUI as sg
 ############################################## actual functionality #######################################
 
 #from: https://github.com/mstamy2/PyPDF2/blob/master/Sample_Code/makesimple.py
-def create_pdf(vals):
+def create_deckblatt(vals):
     TEXT = ""
     for key in ["Kurs","Gruppe","Blatt","Aufgabe"]:
         if(vals[key]!=""):
@@ -20,7 +20,7 @@ def create_pdf(vals):
     point = 1
     inch = 72
     title = output_filename
-    c = canvas.Canvas(output_filename, pagesize=(8.5 * inch, 11 * inch))
+    c = canvas.Canvas(output_filename, pagesize=(8.5 * inch, 11 * inch)) #funktioniert nur wenn 8.5 und 11, kein plan warum docs nicht gelesen lul
     c.setStrokeColorRGB(0,0,0)
     c.setFillColorRGB(0,0,0)
     c.setFont("Helvetica", 12 * point)
@@ -47,15 +47,22 @@ def processPDFs(vals):
     output_f = os.path.split(vals["file_1_k"])[0]
     output_f += "/"+vals["out_k"]+".pdf"
 
-    if(vals["file_2_k"]!=""):
-        merge(vals["file_1_k"],vals["file_2_k"],output_f)
+    comb_pdfs = ( len(vals["file_2_k"])!=0 )
+    create_dckb = vals["Deckb_k"]
 
-    if(vals["Deckb_k"]):
-        create_pdf(vals)
-        if(vals["file_2_k"]!=""):
-            merge("temp_deckblatt.pdf",output_f,output_f)
+    
+    if(comb_pdfs):
+        if(create_dckb):
+            merge(vals["file_1_k"],vals["file_2_k"],"temppdf.pdf")
+            merge("temp_deckblatt.pdf","temppdf.pdf",output_f)
         else:
+            merge(vals["file_1_k"],vals["file_2_k"],output_f)
+    else:
+        if(create_dckb):
+            create_deckblatt(vals)
             merge("temp_deckblatt.pdf",vals["file_1_k"],output_f)
+        else:
+            print("why even use this?")
 
      
 
