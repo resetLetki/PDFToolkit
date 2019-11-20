@@ -19,20 +19,29 @@ del missing
 
 layout = [
     [sg.Text("Deckblatt erstellen")],
-    [sg.Text("Kurs"),sg.InputText()],
-    [sg.Text("Gruppe"),sg.InputText()],
-    [sg.Text("Blatt"),sg.InputText()],
-    [sg.Text("Mitglieder"),sg.InputText()],
-    [sg.FilesBrowse("Dateien")]
+    [sg.Text("Kurs")],
+    [sg.Input()],
+    [sg.Text("Gruppe")],
+    [sg.Input()],
+    [sg.Text("Blatt")],
+    [sg.Input()],
+    [sg.Text("Mitglieder")],
+    [sg.Input()],
+    [sg.Text('PDF File')], 
+    [sg.Input(), sg.FileBrowse()],
+    [sg.Text('Optional File 2')], 
+    [sg.Input(), sg.FileBrowse()],
+    [sg.Text("Output filename")],
+    [sg.Input()],
+    [sg.Button("Create")]
 ]
 
-sel_file = [[sg.Text('PDF File')], [sg.Input(), sg.FileBrowse()]]
-
-window = sg.Window("PDFMerger",layout)
+window = sg.Window("PDF Toolkit",layout)
 
 while(True):
     print()
     event, values = window.read()
+    print(event,values)
     if event in (None, "Cancel"):
         break
 
